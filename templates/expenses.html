@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Expenses</h2>
+
+<form method="POST" action="/add_expense" class="row g-3 mb-4">
+    <div class="col-md-2">
+        <input type="date" name="date" class="form-control" required>
+    </div>
+    <div class="col-md-2">
+        <input type="text" name="type" class="form-control" placeholder="Expense Type" required>
+    </div>
+    <div class="col-md-2">
+        <input type="number" step="0.01" name="amount" class="form-control" placeholder="Amount" required>
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="description" class="form-control" placeholder="Description">
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-success w-100">Add Expense</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in records %}
+        <tr>
+            <form method="POST" action="/update_expense/{{ r.ID }}">
+                <td>{{ r.ID }}</td>
+                <td><input type="date" name="date" class="form-control" value="{{ r.Date }}"></td>
+                <td><input type="text" name="type" class="form-control" value="{{ r.Type }}"></td>
+                <td><input type="number" step="0.01" name="amount" class="form-control" value="{{ r.Amount }}"></td>
+                <td><input type="text" name="description" class="form-control" value="{{ r.Description }}"></td>
+                <td>
+                    <button class="btn btn-success btn-sm">Update</button>
+                    <a href="/delete_expense/{{ r.ID }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this expense?')">Delete</a>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

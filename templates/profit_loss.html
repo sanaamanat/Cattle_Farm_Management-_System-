@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Profit & Loss Report</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>Date</th>
+            <th>Total Income</th>
+            <th>Total Expense</th>
+            <th>Net Profit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in reports %}
+        <tr>
+            <td>{{ r.Date }}</td>
+            <td>Rs. {{ "%.2f"|format(r.Income) }}</td>
+            <td>Rs. {{ "%.2f"|format(r.Expense) }}</td>
+            <td class="{{ 'text-success' if r.Profit >= 0 else 'text-danger' }}">
+                Rs. {{ "%.2f"|format(r.Profit) }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

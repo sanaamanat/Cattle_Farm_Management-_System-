@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Manage Users</h2>
+
+<!-- Add User Form -->
+<div class="container mb-4">
+    <form method="POST" action="/add_user" class="row g-3">
+        <div class="col-md-2">
+            <input type="text" name="username" class="form-control" placeholder="Username" required>
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="fullname" class="form-control" placeholder="Full Name" required>
+        </div>
+        <div class="col-md-2">
+            <input type="email" name="email" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="col-md-2">
+            <select name="role" class="form-select" required>
+                <option value="">Select Role</option>
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="password" name="password" class="form-control" placeholder="Password" required>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Add User</button>
+        </div>
+    </form>
+</div>
+
+<!-- User Table -->
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>UserID</th>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <form method="POST" action="/update_user/{{ user.UserID }}">
+                <td>{{ user.UserID }}</td>
+                <td><input type="text" name="username" value="{{ user.Username }}" class="form-control" required></td>
+                <td><input type="text" name="fullname" value="{{ user.FullName }}" class="form-control" required></td>
+                <td><input type="email" name="email" value="{{ user.Email }}" class="form-control" required></td>
+                <td>
+                    <select name="role" class="form-select">
+                        <option value="Admin" {% if user.Role == 'Admin' %}selected{% endif %}>Admin</option>
+                        <option value="User" {% if user.Role == 'User' %}selected{% endif %}>User</option>
+                    </select>
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-success btn-sm">Update</button>
+                    <a href="/delete_user/{{ user.UserID }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+
+
+

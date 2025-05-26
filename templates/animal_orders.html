@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Animal Purchase Requests</h2>
+
+<table class="table table-bordered mt-4">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Animal</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for o in orders %}
+        <tr>
+            <td>{{ o.OrderID }}</td>
+            <td>{{ o.CustomerName }}</td>
+            <td>{{ o.Email }}</td>
+            <td>{{ o.Phone }}</td>
+            <td>{{ o.AnimalName }}</td>
+            <td>{{ o.TypeName }}</td>
+            <td>{{ o.PurchaseDate }}</td>
+            <td>
+                {{ o.Status }}
+                {% if o.Status == 'Pending' %}
+                    <div class="mt-2">
+                        <a href="/update_order_status/{{ o.OrderID }}/Approved" class="btn btn-success btn-sm">Approve</a>
+                        <a href="/update_order_status/{{ o.OrderID }}/Rejected" class="btn btn-danger btn-sm">Reject</a>
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="8" class="text-center">No orders found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

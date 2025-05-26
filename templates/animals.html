@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Animal Management</h2>
+
+<!-- Admin Only: Add Animal Form -->
+{% if session.get('role') == 'Admin' %}
+<form method="POST" action="/add_animal" class="row g-3 mb-4">
+    <div class="col-md-2"><input type="text" name="animal_name" class="form-control" placeholder="Animal Name" required></div>
+    <div class="col-md-2">
+        <select name="animal_type" class="form-select" required>
+            <option value="">Select Type</option>
+            {% for t in types %}
+                <option value="{{ t.id }}">{{ t.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2"><input type="date" name="dob" class="form-control" required></div>
+    <div class="col-md-1"><input type="number" step="0.1" name="weight" class="form-control" placeholder="Weight" required></div>
+    <div class="col-md-2"><input type="text" name="health_status" class="form-control" placeholder="Health Status" required></div>
+    <div class="col-md-1"><input type="number" step="0.01" name="price" class="form-control" placeholder="Price" required></div>
+    <div class="col-md-2"><button type="submit" class="btn btn-success w-100">Add Animal</button></div>
+</form>
+{% endif %}
+
+<!-- Table Showing All Animals -->
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>DOB</th>
+            <th>Weight</th>
+            <th>Health</th>
+            <th>Price (Rs)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in animals %}
+        <tr>
+            {% if session.get('role') == 'Admin' %}
+            <form method="POST" action="/update_animal/{{ a.AnimalID }}">
+                <td>{{ a.AnimalID }}</td>
+                <td><input name="animal_name" value="{{ a.AnimalName }}" class="form-control"></td>
+                <td>
+                    <select name="animal_type" class="form-select">
+                        {% for t in types %}
+                            <option value="{{ t.id }}" {% if t.id == a.AnimalTypeID %}selected{% endif %}>{{ t.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input type="date" name="dob" value="{{ a.DOB }}" class="form-control"></td>
+                <td><input name="weight" type="number" step="0.1" value="{{ a.Weight }}" class="form-control"></td>
+                <td><input name="health_status" value="{{ a.HealthStatus }}" class="form-control"></td>
+                <td><input name="price" type="number" step="0.01" value="{{ a.Price or '' }}" class="form-control"></td>
+                <td>
+                    <button class="btn btn-success btn-sm">Update</button>
+                    <a href="/delete_animal/{{ a.AnimalID }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this animal?')">Delete</a>
+                    <a href="/animal_profile/{{ a.AnimalID }}" class="btn btn-info btn-sm">View Profile</a>
+                </td>
+            </form>
+            {% else %}
+                <td>{{ a.AnimalID }}</td>
+                <td>{{ a.AnimalName }}</td>
+                <td>{{ a.AnimalType }}</td>
+                <td>{{ a.DOB }}</td>
+                <td>{{ a.Weight }}</td>
+                <td>{{ a.HealthStatus }}</td>
+               <td>
+        {% if a.Price %}
+          {{ a.Price }}
+        {% else %}
+          N/A
+        {% endif %}
+      </td>
+                <td>
+                    <a href="/animal_profile/{{ a.AnimalID }}" class="btn btn-info btn-sm">View Profile</a>
+                </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+
+
+

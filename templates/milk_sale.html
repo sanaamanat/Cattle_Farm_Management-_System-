@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Milk Sale Records</h2>
+
+<form method="POST" action="/add_sale" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <input type="date" name="date" class="form-control" required>
+    </div>
+    <div class="col-md-3">
+        <input type="number" step="0.1" name="quantity" class="form-control" placeholder="Litres" required>
+    </div>
+    <div class="col-md-3">
+        <input type="number" step="0.01" name="price" class="form-control" placeholder="Price per Litre" required>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-success w-100">Add Sale</button>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Litres</th>
+            <th>Price per Litre</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in records %}
+        <tr>
+            <form method="POST" action="/update_sale/{{ r.ID }}">
+                <td>{{ r.ID }}</td>
+                <td><input type="date" name="date" class="form-control" value="{{ r.Date }}"></td>
+                <td><input type="number" step="0.1" name="quantity" class="form-control" value="{{ r.Qty }}"></td>
+                <td><input type="number" step="0.01" name="price" class="form-control" value="{{ r.Price }}"></td>
+                <td>{{ r.Total }}</td>
+                <td>
+                    <button class="btn btn-success btn-sm">Update</button>
+                    <a href="/delete_sale/{{ r.ID }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this sale?')">Delete</a>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

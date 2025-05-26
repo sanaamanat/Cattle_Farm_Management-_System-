@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Select Payment Method</h2>
+
+<form method="POST" class="text-center">
+    <input type="hidden" name="order_id" value="{{ order_id }}">
+    <div class="mb-3">
+        <select name="payment_method" class="form-select w-25 mx-auto" required>
+            <option value="">-- Select Payment Method --</option>
+            <option value="Cash">Cash</option>
+            <option value="JazzCash">JazzCash</option>
+            <option value="EasyPaisa">EasyPaisa</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Submit Payment</button>
+</form>
+{% endblock %}
