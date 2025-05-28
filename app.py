@@ -689,5 +689,76 @@ def payment(order_id):
     return render_template('payment.html', order_id=order_id)
 
 
+# User Places a Milk Order
+@app.route('/milk_order', methods=['GET', 'POST'])
+def milk_order():
+    if 'username' not in session or session.get('role') != 'User':
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
+        quantity = request.form['quantity']
+        price = request.form['price']
+        method = request.form['payment_method']
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO MilkOrder (CustomerName, Email, Phone, QuantityLitres, PricePerLitre, PaymentMethod)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (name, email, phone, quantity, price, method))
+        conn.commit()
+        conn.close()
+
+        return "Your milk order has been placed. Await admin approval."
+
+    return render_template('milk_order.html')
+# Admin View for Pending Orders
+
+
+@app.route('/milk_orders')
+def milk_orders():
+    if 'username' not in session or session.get('role') != 'Admin':
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT OrderID, CustomerName, Email, Phone, OrderDate, QuantityLitres, PricePerLitre, TotalAmount, Status, PaymentMethod
+        FROM MilkOrder ORDER BY OrderDate DESC
+    """)
+    orders = [dict(
+        OrderID=r[0],
+        CustomerName=r[1],
+        Email=r[2],
+        Phone=r[3],
+        OrderDate=r[4],
+        QuantityLitres=r[5],
+        PricePerLitre=r[6],
+        TotalAmount=r[7],
+        Status=r[8],
+        PaymentMethod=r[9]
+    ) for r in cursor.fetchall()]
+    conn.close()
+    return render_template('milk_orders.html', orders=orders)
+# Admin Status Update Route
+
+
+@app.route('/update_milk_order/<int:order_id>/<string:new_status>')
+def update_milk_order(order_id, new_status):
+    if 'username' not in session or session.get('role') != 'Admin':
+        return "Access denied."
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE MilkOrder SET Status = ? WHERE OrderID = ?", (new_status, order_id))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('milk_orders'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)

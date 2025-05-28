@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Milk Orders Management</h2>
+<table class="table table-bordered table-striped">
+  <thead class="table-dark">
+    <tr>
+      <th>Customer</th><th>Email</th><th>Phone</th><th>Date</th>
+      <th>Qty</th><th>Price</th><th>Total</th><th>Method</th><th>Status</th><th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td>{{ o.CustomerName }}</td>
+      <td>{{ o.Email }}</td>
+      <td>{{ o.Phone }}</td>
+      <td>{{ o.OrderDate }}</td>
+      <td>{{ o.QuantityLitres }}</td>
+      <td>{{ o.PricePerLitre }}</td>
+      <td>{{ o.TotalAmount }}</td>
+      <td>{{ o.PaymentMethod }}</td>
+      <td>{{ o.Status }}</td>
+      <td>
+        <a href="/update_milk_order/{{ o.OrderID }}/Accepted" class="btn btn-success btn-sm">Accept</a>
+        <a href="/update_milk_order/{{ o.OrderID }}/Rejected" class="btn btn-danger btn-sm">Reject</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
