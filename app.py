@@ -23,16 +23,49 @@ def home():
     return render_template('home.html')
 
 
+# -------------------- register--------------------
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        fullname = request.form['fullname']
+        email = request.form['email']
+        role = 'User'  # All registered users default to User
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if username already exists
+        cursor.execute("SELECT * FROM Users WHERE Username = ?", (username,))
+        existing_user = cursor.fetchone()
+        if existing_user:
+            conn.close()
+            return "Username already exists. Try a different one."
+
+        # Insert new user
+        cursor.execute("""
+            INSERT INTO Users (Username, Password, FullName, Email, Role)
+            VALUES (?, ?, ?, ?, ?)
+        """, (username, password, fullname, email, role))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
 # login page
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username']  # get username from form
         password = request.form['password']
 
         conn = get_db_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor()  # run sql quries
         cursor.execute(
             "SELECT UserID, Username, Password, Role FROM Users WHERE Username = ?", (username,))
         row = cursor.fetchone()
@@ -46,6 +79,9 @@ def login():
         else:
             return "Invalid username or password."
     return render_template('login.html')
+
+
+# Session ek temporary memory hoti hai server side pe jisme user ka data store hota hai jab tak wo login hai.
 
 # logout page
 
@@ -381,39 +417,6 @@ def profit_loss():
                     Profit=row[3]) for row in rows]
     conn.close()
     return render_template('profit_loss.html', reports=reports)
-
-
-# -------------------- register--------------------
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        fullname = request.form['fullname']
-        email = request.form['email']
-        role = 'User'  # All registered users default to User
-
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # Check if username already exists
-        cursor.execute("SELECT * FROM Users WHERE Username = ?", (username,))
-        existing_user = cursor.fetchone()
-        if existing_user:
-            conn.close()
-            return "Username already exists. Try a different one."
-
-        # Insert new user
-        cursor.execute("""
-            INSERT INTO Users (Username, Password, FullName, Email, Role)
-            VALUES (?, ?, ?, ?, ?)
-        """, (username, password, fullname, email, role))
-        conn.commit()
-        conn.close()
-
-        return redirect(url_for('login'))
-
-    return render_template('register.html')
 
 
 # Route: View Animal Profile (for Admin + User)
