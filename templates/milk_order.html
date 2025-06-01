@@ -1,13 +1,9 @@
 
 <!--Users can place milk orders -->
-{% load static %}
-{% load bootstrap5 %}
-{% load crispy_forms_tags %}
-
-{% block title %}Milk Order Form{% endblock %}
 {% extends "base.html" %}
 {% block content %}
 <h2 class="text-center">Milk Order Form</h2>
+
 <form method="POST" class="w-50 mx-auto">
   <input type="text" name="name" class="form-control mb-2" placeholder="Full Name" required>
   <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
@@ -24,3 +20,4 @@
   <button type="submit" class="btn btn-success w-100">Place Order</button>
 </form>
 {% endblock %}
+

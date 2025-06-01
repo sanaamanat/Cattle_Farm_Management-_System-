@@ -1,3 +1,4 @@
+/* CSS for the simple web page */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -42,4 +43,5 @@ main p {
     color: #555;
     max-width: 600px;
 }
+ 
 

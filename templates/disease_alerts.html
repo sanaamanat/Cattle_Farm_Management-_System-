@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Disease Alerts</h2>
+
+<table class="table table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th>Animal</th>
+      <th>Date</th>
+      <th>Disease</th>
+      <th>Severity</th>
+      <th>Recommended Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in alerts %}
+    <tr class="{% if a[4] == 'High' %}table-danger{% elif a[4] == 'Moderate' %}table-warning{% endif %}">
+      <td>{{ a[1] }}</td>
+      <td>{{ a[2] }}</td>
+      <td>{{ a[3] }}</td>
+      <td><strong>{{ a[4] }}</strong></td>
+      <td>{{ a[5] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -759,6 +759,55 @@ def update_milk_order(order_id, new_status):
     conn.close()
     return redirect(url_for('milk_orders'))
 
+# Add Route to Add Disease Alert
+
+
+@app.route('/add_disease_alert', methods=['GET', 'POST'])
+def add_disease_alert():
+    if 'username' not in session or session.get('role') != 'Admin':
+        return "Access denied."
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT AnimalID, AnimalName FROM Animals")
+    animals = cursor.fetchall()
+
+    if request.method == 'POST':
+        animal_id = request.form['animal_id']
+        disease_name = request.form['disease_name']
+        severity = request.form['severity']
+        action = request.form['recommended_action']
+
+        cursor.execute("""
+            INSERT INTO DiseasesAlert (AnimalID, DiseaseName, Severity, RecommendedAction)
+            VALUES (?, ?, ?, ?)
+        """, (animal_id, disease_name, severity, action))
+        conn.commit()
+        conn.close()
+        return "Disease alert added successfully."
+
+    conn.close()
+    return render_template('add_disease_alert.html', animals=animals)
+# View Disease Alerts
+
+
+@app.route('/disease_alerts')
+def disease_alerts():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT da.AlertID, a.AnimalName, da.AlertDate, da.DiseaseName, da.Severity, da.RecommendedAction
+        FROM DiseasesAlert da
+        JOIN Animals a ON da.AnimalID = a.AnimalID
+        ORDER BY da.AlertDate DESC
+    """)
+    alerts = cursor.fetchall()
+    conn.close()
+    return render_template('disease_alerts.html', alerts=alerts)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
